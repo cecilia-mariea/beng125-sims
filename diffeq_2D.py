@@ -18,29 +18,35 @@ BASE_PARAMETERS = {
     "dm" : 0.2 # natural degredation of MDM2
 } 
 
-def p53_MDM2(t, vars, params):
+def hill(p, n, K):
+    p = np.asarray(p, dtype=float)
+    return np.power(p, n) / (np.power(K, n) + np.power(p, n))
 
-    p, M = vars
+def dpdt(p, M, params):
     kp = params["kp"]
     kp_p53 = params["kp_p53"]
     dp = params["dp"]
     Kp = params["Kp"]
-    Km = params["Km"]
     lam = params["lam"]
     n = params["n"]
+
+    return (kp + kp_p53 * hill(p,n, Kp)) - ((dp + lam * M) * p)
+
+def dMdt(p, M, params):
+
+    Km = params["Km"]
     m = params["m"]
     km = params["km"]
     km_p53 = params["km_p53"]
     dm = params["dm"]
 
-    def hill(p, n, K):
-        p = np.asarray(p, dtype=float)
-        return np.power(p, n) / (np.power(K, n) + np.power(p, n))
-    
-    dpdt = (kp + kp_p53 * hill(p,n, Kp)) - ((dp + lam * M) * p)
-    dMdt = (km + km_p53 * hill(p, m, Km)) - (dm * M)
+    return (km + km_p53 * hill(p, m, Km)) - (dm * M)
 
-    return [dpdt, dMdt]
+def p53_MDM2(t, vars, params):
+
+    p, M = vars
+
+    return (dpdt(p, M, params), dpdt(p, M, params))
 
 def solve_sys(t_span, t_eval, init_cond, params):
     return solve_ivp(
