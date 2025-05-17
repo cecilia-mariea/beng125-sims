@@ -2,27 +2,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import root
-from scipy.misc import derivative
+from scipy.differentiate import derivative
 
-# parameters
+from set_params_eqns import dp as dpdt
+from set_params_eqns import PARAMETERS_1D
 
-BASE_PARAMETERS = {
-    "kp" : 0.8, # uM / min
-    "kp_p53" : 6, # uM/ min
-    "dp" : 0.1, # 1 / min
-    "Kp" : 2, # uM
-    "Km" : 1,  # uM
-    "lam" : 3, # # 1 / min
-    "n" : 4, # dimensionless , cooperative binding
-    "m": 2 # dimensionless, cooperative binding
-} 
-
-def dpdt(p, kp, kp_p53, dp, Kp, Km, lam, n, m):
-
-    def hill(p, n, K):
-        return (p ** n) / (K ** n + p ** n)
-
-    return (kp + kp_p53 * hill(p,n, Kp)) - ((dp + lam * hill(p, m, Km)) * p)
 
 # find fixed points
 def find_fixed_points(dpdt, params, init_cond):
@@ -46,7 +30,7 @@ def classify_stability(dpdt, ss, params):
     def f(p):
         return dpdt(p, **params)
 
-    dfdp = derivative(f, ss, dx=1e-6)
+    dfdp = derivative(f, ss).df
 
     return "stable" if dfdp < 0 else "unstable" 
 
@@ -94,9 +78,9 @@ if __name__ == "__main__":
     # vary lambda 
 
     lam_vals = np.linspace(1,3.5, 100) 
-    bifurcation_diagram(dpdt, 'lam', lam_vals, BASE_PARAMETERS, init_cond)
+    bifurcation_diagram(dpdt, 'lam', lam_vals, PARAMETERS_1D, init_cond)
 
     # vary kp_p53
 
     kp_p53_vals = np.linspace(5,18, 100)
-    bifurcation_diagram(dpdt, 'kp_p53', kp_p53_vals, BASE_PARAMETERS, init_cond)
+    bifurcation_diagram(dpdt, 'kp_p53', kp_p53_vals, PARAMETERS_1D, init_cond)

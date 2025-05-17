@@ -6,7 +6,13 @@ from scipy.differentiate import jacobian
 from scipy.integrate import odeint
 from scipy.optimize import fsolve
 
-from diffeq_2D import BASE_PARAMETERS, p53_MDM2, solve_sys,dpdt, dMdt
+from diffeq_2D import BASE_PARAMETERS, solve_sys,dpdt, dMdt
+
+def p53_MDM2(vars, params):
+
+    p, M = vars
+
+    return dpdt(p,M, params), dpdt(p, M, params)
 
 # Find fixed points
 def find_fixed_pts(p0, m0):
@@ -16,7 +22,7 @@ def find_fixed_pts(p0, m0):
     for p in p0: 
         for m in m0:
             initial_guess = np.array([p,m])
-            sol = fsolve(p53_MDM2, initial_guess)
+            sol = fsolve(p53_MDM2, initial_guess, args=(BASE_PARAMETERS))
 
             if np.allclose(
                 [dpdt(sol[0], sol[1], BASE_PARAMETERS),
@@ -32,4 +38,6 @@ def plot_phase_plane(nullcline=False):
         pass
 
 if __name__ == '__main__':
-    pass
+    p0 = (0,) 
+    m0 = (0,)
+    pts = find_fixed_pts(p0, m0)

@@ -4,18 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 
-from bifurcations_1D import dpdt, find_fixed_points 
-
-BASE_PARAMETERS = {
-    "kp" : 0.8, # uM / min
-    "kp_p53" : 6, # uM/ min
-    "dp" : 0.1, # 1 / min
-    "Kp" : 2, # uM
-    "Km" : 1,  # uM
-    "lam" : 3, # # 1 / min
-    "n" : 4, # dimensionless , cooperative binding
-    "m": 2 # dimensionless, cooperative binding
-}
+from set_params_eqns import dp as dpdt
+from set_params_eqns import PARAMETERS_1D
+from bifurcations_1D import find_fixed_points 
 
 def bistability_analysis(dpdt, param_dict, base_params, init_cond):
 
@@ -90,6 +81,6 @@ if __name__ == "__main__":
             pair[1] : param_ranges[pair[1]]
         } 
 
-        bistability_data[pair] = bistability_analysis(dpdt, param_dict, BASE_PARAMETERS, init_cond)
+        bistability_data[pair] = bistability_analysis(dpdt, param_dict, PARAMETERS_1D, init_cond)
 
     plot_all_bistability_data(bistability_data)
