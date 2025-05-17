@@ -4,50 +4,7 @@ from math import ceil
 from scipy.integrate import solve_ivp
 from itertools import product
 
-BASE_PARAMETERS = {
-    "kp" : 0.8, # p53 basal synthesis
-    "kp_p53" : 6, # autoregulation of p53
-    "dp" : 0.1, # natural degredation of p53
-    "Kp" : 2, # half saturation constant for TP53
-    "Km" : 1,  # half saturation constant for MDM2 mRNA
-    "lam" : 3, # ubiquitination of p53
-    "n" : 4, #  cooperativity of TP53 binding
-    "m": 2, # cooperativity of MDM2 mRNA binding
-    "km": 0.5, # MDM2 basal synthesis
-    "km_p53" : 1.5, # activation of MDM2
-    "dm" : 0.2 # natural degredation of MDM2
-} 
-
-def hill(p, n, K):
-    p = np.asarray(p, dtype=float)
-    return np.power(p, n) / (np.power(K, n) + np.power(p, n))
-
-def dpdt(p, M, params):
-
-    kp = params["kp"]
-    kp_p53 = params["kp_p53"]
-    dp = params["dp"]
-    Kp = params["Kp"]
-    lam = params["lam"]
-    n = params["n"]
-
-    return (kp + kp_p53 * hill(p,n, Kp)) - ((dp + lam * M) * p)
-
-def dMdt(p, M, params):
-
-    Km = params["Km"]
-    m = params["m"]
-    km = params["km"]
-    km_p53 = params["km_p53"]
-    dm = params["dm"]
-
-    return (km + km_p53 * hill(p, m, Km)) - (dm * M)
-
-def p53_MDM2(t, vars, params):
-
-    p, M = vars
-
-    return (dpdt(p, M, params), dpdt(p, M, params))
+from set_params_eqns import p53_MDM2, EXP_PARAMETERS_2D  
 
 def solve_sys(t_span, t_eval, init_cond, params):
     return solve_ivp(
@@ -105,7 +62,7 @@ def pairwise(p0, M0):
 
 if __name__ == "__main__":
 
-    # if many init cond, pass a itera of init cond pairs (p,M)
+    # if many init cond, pass a iterable of init cond pairs (p,M)
 
     p0 = np.linspace(1,5,5)
     M0 = np.linspace(1,5,5)
@@ -114,4 +71,4 @@ if __name__ == "__main__":
     t0 = 0
     tf = 15
 
-    t_sim(t0, tf, init_cond, BASE_PARAMETERS, init_range=True)
+    t_sim(t0, tf, init_cond, EXP_PARAMETERS_2D, init_range=True)

@@ -6,7 +6,8 @@ from scipy.differentiate import jacobian
 from scipy.integrate import odeint
 from scipy.optimize import fsolve
 
-from diffeq_2D import BASE_PARAMETERS, solve_sys,dpdt, dMdt
+from set_params_eqns import EXP_PARAMETERS_2D, dMdt, p53,MDM2
+from set_params_eqns import dpdt_2D as dpdt
 
 def p53_MDM2(vars, params):
 
@@ -22,11 +23,11 @@ def find_fixed_pts(p0, m0):
     for p in p0: 
         for m in m0:
             initial_guess = np.array([p,m])
-            sol = fsolve(p53_MDM2, initial_guess, args=(BASE_PARAMETERS))
+            sol = fsolve(p53_MDM2, initial_guess, args=(EXP_PARAMETERS_2D))
 
             if np.allclose(
-                [dpdt(sol[0], sol[1], BASE_PARAMETERS),
-                 dMdt(sol[0], sol[1], BASE_PARAMETERS)],
+                [dpdt(sol[0], sol[1], EXP_PARAMETERS_2D),
+                 dMdt(sol[0], sol[1], EXP_PARAMETERS_2D)],
                 [0,0]):
                 fixed_pts.append(tuple(sol))
 

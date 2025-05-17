@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.integrate import solve_ivp
 
-from set_params_eqns import dpdt_1D, PARAMETERS_1D
+from set_params_eqns import dpdt_1D as dpdt
+from set_params_eqns import PARAMETERS_1D
 
 def solve_ODE(t_span, t_eval, p0, params):
     return solve_ivp(
-        fun = lambda  t, p: dpdt_1D(t, p, params), 
+        fun = lambda  t, p: dpdt(t, p, params), 
         t_span = t_span,
         y0 = [p0],
         t_eval = t_eval,
