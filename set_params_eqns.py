@@ -29,7 +29,7 @@ EXP_PARAMETERS_2D = {
     "dm" : 0.2 # natural degredation of MDM2
 }
 
-# eqns
+# 1D eqns
 
 def hill(p, n, K):
     p = np.asarray(p, dtype=float)
