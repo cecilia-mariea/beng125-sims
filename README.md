@@ -21,7 +21,7 @@ Although there is module functionality, each Python file has a main function for
 
 ### 2D Functionality
 
-- `diffeq_2D.py`
+- `solve_2D.py`
 - `phase_plane_2D.py`
 
 No type annotations and my naming conventions get shaky throughout the module - sorry.

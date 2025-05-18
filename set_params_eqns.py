@@ -35,7 +35,7 @@ def hill(p, n, K):
     p = np.asarray(p, dtype=float)
     return np.power(p, n) / (np.power(K, n) + np.power(p, n))
 
-# 1D eqns
+# 1D eqnsset_params_eqns.py
 def dp(p, kp, kp_p53, dp, Kp, Km, lam, n, m):
     return (kp + kp_p53 * hill(p,n, Kp)) - ((dp + lam * hill(p, m, Km)) * p)
 

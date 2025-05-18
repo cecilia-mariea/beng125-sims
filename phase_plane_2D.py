@@ -1,22 +1,23 @@
 # imports
 import numpy as np
+from numpy.linalg import eigvals 
 import matplotlib.pyplot as plt
 
 from scipy.differentiate import jacobian
 from scipy.integrate import odeint
 from scipy.optimize import fsolve
 
-from set_params_eqns import EXP_PARAMETERS_2D, dMdt, p53,MDM2
+from set_params_eqns import EXP_PARAMETERS_2D, dMdt, p53_MDM2 
 from set_params_eqns import dpdt_2D as dpdt
 
-def p53_MDM2(vars, params):
+def calc_vec_field():
+    pass
 
-    p, M = vars
-
-    return dpdt(p,M, params), dpdt(p, M, params)
+def calc_nullclines():
+    pass
 
 # Find fixed points
-def find_fixed_pts(p0, m0):
+def calc_fixed_pts(p0, m0):
 
     fixed_pts = []
 
@@ -33,12 +34,19 @@ def find_fixed_pts(p0, m0):
 
     return fixed_pts
 
-# Plot Phase Plane
-def plot_phase_plane(nullcline=False):
-    if nullcline:
-        pass
+def calc_jacobian():
+    pass
+
+def classify_fixed_pts(pts):
+    pass
+
+def plot_phase_plane():
+    pass
+
+def simulate_trajectories():
+    pass
 
 if __name__ == '__main__':
     p0 = (0,) 
     m0 = (0,)
-    pts = find_fixed_pts(p0, m0)
+    pts = calc_fixed_pts(p0, m0)
