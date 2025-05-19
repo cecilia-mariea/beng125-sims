@@ -4,9 +4,10 @@ from math import ceil
 from scipy.integrate import solve_ivp
 from itertools import product
 
-from set_params_eqns import p53_MDM2, EXP_PARAMETERS_2D  
+from set_params_eqns import p53_MDM2
+from set_params_eqns import PARAMETERS_2D as params
 
-def solve_sys(t_span, t_eval, init_cond, params):
+def solve_sys(t_span, t_eval, init_cond):
     return solve_ivp(
         fun = lambda t, vars: p53_MDM2(t, vars, params), 
         t_span = t_span,
@@ -16,10 +17,12 @@ def solve_sys(t_span, t_eval, init_cond, params):
         atol=1e-10 # global tolerance
     )
 
-def t_sim(t0, tf, init_cond, params, init_range=False):
+def t_sim(t0, tf, init_cond, init_range=False):
 
     t_span = (t0, tf)
     t_eval = np.linspace(t_span[0], t_span[1], 1000)
+
+    sols=[]
     
     if init_range:
 
@@ -32,7 +35,8 @@ def t_sim(t0, tf, init_cond, params, init_range=False):
 
         for curr_cond, ax in zip(init_cond, axes):
 
-            sol = solve_sys(t_span, t_eval, curr_cond, params)
+            sol = solve_sys(t_span, t_eval, curr_cond)
+            sols.append(sol)
 
             ax.plot(sol.t, sol.y[0], label=f"p53 concentration, p53(t=0)={curr_cond[0]} uM")
             ax.plot(sol.t, sol.y[1], label=f"MDM2 concentration, MDM2(t=0)={curr_cond[1]} uM")
@@ -45,6 +49,7 @@ def t_sim(t0, tf, init_cond, params, init_range=False):
         plt.figure(figsize=(8,5))
 
         sol = solve_sys(t_span, t_eval, init_cond, params)
+        sols.append(sol)
 
         plt.plot(sol.t, sol.y[0], label="p53 concentration")
         plt.plot(sol.t, sol.y[1], label="MDM2 concentration")
@@ -53,9 +58,12 @@ def t_sim(t0, tf, init_cond, params, init_range=False):
         plt.ylabel("Species Concentration (uM)")
         plt.xlabel("Time (min)")
 
+
     plt.legend()
     plt.tight_layout()
     plt.show()
+    
+    return sol
 
 def pairwise(p0, M0): 
     return tuple(product(p0, M0))
@@ -71,4 +79,4 @@ if __name__ == "__main__":
     t0 = 0
     tf = 15
 
-    t_sim(t0, tf, init_cond, EXP_PARAMETERS_2D, init_range=True)
+    sols = t_sim(t0, tf, init_cond, init_range=True)

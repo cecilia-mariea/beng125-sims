@@ -4,17 +4,16 @@ import matplotlib.pyplot as plt
 from scipy.optimize import root
 from scipy.differentiate import derivative
 
-from set_params_eqns import dp as dpdt
-from set_params_eqns import PARAMETERS_1D
+from set_params_eqns import dp as dpdt, PARAMETERS_1D as params
 
 
 # find fixed points
-def find_fixed_points(dpdt, params, init_cond):
-
-    steady_states = []
+def find_fixed_points(params, init_cond):
 
     def f(p):
         return dpdt(p, **params)
+
+    steady_states = []
 
     for cond in init_cond:
         sol = root(f,cond)
@@ -25,7 +24,7 @@ def find_fixed_points(dpdt, params, init_cond):
     return sorted(steady_states)
 
 # classify stability of the fixed points that were found
-def classify_stability(dpdt, ss, params):
+def classify_stability(params, ss):
     
     def f(p):
         return dpdt(p, **params)
@@ -35,7 +34,7 @@ def classify_stability(dpdt, ss, params):
     return "stable" if dfdp < 0 else "unstable" 
 
 # draw bifuctation diagrams
-def bifurcation_diagram(dpdt, param_label, param_vals, params, init_cond):
+def bifurcation_diagram(param_label, param_vals, init_cond):
     
     bifurcation_data = []
 
@@ -43,10 +42,10 @@ def bifurcation_diagram(dpdt, param_label, param_vals, params, init_cond):
         params_copy = params.copy()
         params_copy[param_label] = param
         
-        fixed_points = find_fixed_points(dpdt, params_copy, init_cond)
+        fixed_points = find_fixed_points(params_copy, init_cond)
 
         for pt in fixed_points:
-            stability = classify_stability(dpdt, pt, params_copy)
+            stability = classify_stability(params_copy, pt)
             bifurcation_data.append((param, pt, stability))
 
     # seperate unstable and stable branches
@@ -72,15 +71,4 @@ def bifurcation_diagram(dpdt, param_label, param_vals, params, init_cond):
     return bifurcation_data
 
 if __name__ == "__main__":
-
-    init_cond = np.linspace(1, 10, 20)
-
-    # vary lambda 
-
-    lam_vals = np.linspace(1,3.5, 100) 
-    bifurcation_diagram(dpdt, 'lam', lam_vals, PARAMETERS_1D, init_cond)
-
-    # vary kp_p53
-
-    kp_p53_vals = np.linspace(5,18, 100)
-    bifurcation_diagram(dpdt, 'kp_p53', kp_p53_vals, PARAMETERS_1D, init_cond)
+    print("1D bifurcations module called directly")

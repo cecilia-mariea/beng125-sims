@@ -3,9 +3,8 @@ import matplotlib.pyplot as plt
 
 from set_params_eqns import PARAMETERS_1D, dp
 
-def dpdt_vs_p(param_label="", param_vals=[]):
+def dpdt_vs_p(p_vals, param_label="", param_vals=[]):
 
-    p_vals = np.linspace(-2.5,5,200)
     plt.figure(figsize=(8,5))
 
     if bool(param_label):
@@ -36,9 +35,7 @@ def dpdt_vs_p(param_label="", param_vals=[]):
     plt.tight_layout()
     plt.show()
 
+    return dpdt_sol
+
 if __name__ == "__main__":
-
-    # vary lambda
-
-    dpdt_vs_p("lam", np.linspace(1.75, 3, 5))
-    dpdt_vs_p("kp_p53", np.linspace(6, 14, 5))
+    print("1D diffeq script was called explicitly")

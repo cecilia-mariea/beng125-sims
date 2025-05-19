@@ -4,27 +4,34 @@ Written for **Spring 2025** quarter session with Professor Jeff Hasty.
 
 ## Network Description
 
-The module was written to model the simplified dynamics of p53 autoregulation and ubiquitation by MDM2. The equation and parameters are explictly defined in `set_params_eqns.py` and changes to those statements should be reflected throughout the entire module. 
+This small module was written to model the simplified dynamics of p53 autoregulation and ubiquitation by MDM2.
+
+The equations and parameters are explictly defined in `set_params_eqns.py` and changes to those statements should be reflected throughout the entire module. 
+
+There are two scripts--`results_1D.py` and `results_2D.py`-- that call upon the module to generate the figures included in our report. Those are good examples on how to use the module.
 
 ***NOTE***: The model was not fit to experimental data and is limited in many aspects ; some assumptions may not be biologically sound. The goal was to replicate the qualitative behaviors seen in literature to practice *dynamics* not biology. There is *no* physiological relevance or innovative features.
 
-Although there is module functionality, each Python file has a main function for direct script calls that generate the figures that were included in our report. These may be useful as example cases for future use.
-
 ## Features By File
+
+- `set_params_eqns.py`
 
 ### 1D Functionality
 
 - `solve_1D.py`
 - `diffeq_1D.py`
 - `bifurcations_1D.py`
-- `param_sweep_1D.py`
+- `codimension_bifurcations_1D.py`
 
 ### 2D Functionality
 
 - `solve_2D.py`
 - `phase_plane_2D.py`
+- `plot_phase_plane.py`
 
-No type annotations and my naming conventions get shaky throughout the module - sorry.
+No type annotations, bad naming conventions, no docstrings, some hardcoded graph formating - sorry.
+
+Technically, you could also change the functions in `set_params_eqns.py` to reflect any 1D or 2D system and use the model functionality. Though, some things will be wonky (e.g. graph labels and axes).
 
 ## Requirements
 
