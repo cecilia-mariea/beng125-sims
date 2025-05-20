@@ -13,8 +13,8 @@ def solve_sys(t_span, t_eval, init_cond):
         t_span = t_span,
         y0 = init_cond, # should be array-like
         t_eval = t_eval,
-        rtol=1e-8, # relative tolerance
-        atol=1e-10 # global tolerance
+        rtol = 1e-8, # relative tolerance
+        atol = 1e-10 # global tolerance
     )
 
 def t_sim(t0, tf, init_cond, init_range=False):
@@ -22,7 +22,7 @@ def t_sim(t0, tf, init_cond, init_range=False):
     t_span = (t0, tf)
     t_eval = np.linspace(t_span[0], t_span[1], 1000)
 
-    sols=[]
+    sols = []
     
     if init_range:
 
@@ -65,18 +65,8 @@ def t_sim(t0, tf, init_cond, init_range=False):
     
     return sol
 
-def pairwise(p0, M0): 
-    return tuple(product(p0, M0))
+pairwise = lambda p0, M0: tuple(product(p0, M0))
 
 if __name__ == "__main__":
 
-    # if many init cond, pass a iterable of init cond pairs (p,M)
-
-    p0 = np.linspace(1,5,5)
-    M0 = np.linspace(1,5,5)
-    init_cond = pairwise(p0,M0) 
-    # init_cond = (1,2)
-    t0 = 0
-    tf = 15
-
-    sols = t_sim(t0, tf, init_cond, init_range=True)
+    print("2D solve script called explicitly")

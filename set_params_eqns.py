@@ -1,6 +1,8 @@
 import numpy as np
 
-# these are the only things hard-coded in throughout the entire module, all functionality should be preserved if changes are made to this file
+""" 
+these are most of the things that are hard-coded in for the entire module, all functionality should be preserved if changes are made to this file
+"""
 
 # parameters
 
@@ -41,8 +43,7 @@ def hill(p, n, K):
 def dp(p, kp, kp_p53, dp, Kp, Km, lam, n, m):
     return (kp + kp_p53 * hill(p,n, Kp)) - ((dp + lam * hill(p, m, Km)) * p)
 
-def dpdt_1D(t, p, params):
-    return dp(p, **params)
+dpdt_1D = lambda t, p, params: dp(p, **params)
 
 # 2D eqns
 
@@ -61,17 +62,29 @@ def dMdt(vars, kp, kp_p53, dp, Kp, Km, lam, n, m, km, km_p53, dm):
 def p53_MDM2(t, vars, params):
     return dpdt_2D(vars, **params), dMdt(vars, **params)
 
-# TODO
 # nullclines : solve for M when dpdt = 0 etc. and hard code in
-def calc_nullcline():
+def calc_nullcline(p, kp, kp_p53, dp, Kp, Km, lam, n, m, km, km_p53, dm):
 
-    def p_nullcline():
-        pass
+    p_nullcline_M = np.zeros_like(p)
+    M_nullcline_M = np.zeros_like(p)
 
-    def M_nullcline():
-        pass
+    def p_nullcline(p):
 
-pass
+        if p > 0: 
+            numerator = (kp + kp_p53 * hill(p, n, Kp)) - dp * p
+            return numerator / (lam * p)
+        else: 
+            return np.nan
+
+    def M_nullcline(p):
+        return (km + km_p53 * hill(p, m, Km)) / dm
+
+    for i, p_val in enumerate(p):
+
+        p_nullcline_M[i] = p_nullcline(p_val) 
+        M_nullcline_M[i] = M_nullcline(p_val)
+
+    return p, p_nullcline_M, M_nullcline_M
 
 if __name__ == "__main__":
     print("set params and eqns script loaded directly")

@@ -26,8 +26,8 @@ There are two scripts--`results_1D.py` and `results_2D.py`-- that call upon the 
 ### 2D Functionality
 
 - `solve_2D.py`
-- `phase_plane_2D.py`
 - `plot_phase_plane.py`
+- `plot_nullclines.py`
 
 No type annotations, bad naming conventions, no docstrings, some hardcoded graph formating - sorry.
 
@@ -35,7 +35,7 @@ Technically, you could also change the functions in `set_params_eqns.py` to refl
 
 ## Requirements
 
-The scripts were developed in an environment with the follwing packages and their appropriate dependancies. For full intended functionality, have the following installed or equivalent versions. 
+The scripts were developed in an environment with the following packages and their appropriate dependancies. For full intended functionality, have the following installed or equivalent versions. 
 
 Most up-to-date, stable versions of these packages should work fine.
 

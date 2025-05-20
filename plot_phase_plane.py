@@ -1,16 +1,16 @@
 # imports
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-from matplotlib.cm import ScalarMappable
 
 # custom imports
 from set_params_eqns import  dMdt 
 from set_params_eqns import dpdt_2D as dpdt, PARAMETERS_2D as params
 
-# calculate trajectories
 # calculate 2D vector field
 def plot_phase_plane(p_range, M_range, grid_size, traj="", include_traj=False, normalized=False):
+    """
+    `traj` should be a solve_ivp object if `include_traj` is True, can use solve_2D `solve_sys`
+    """
 
     # set up points in the vector field
     p = np.linspace(p_range[0], p_range[1], grid_size)
@@ -38,9 +38,11 @@ def plot_phase_plane(p_range, M_range, grid_size, traj="", include_traj=False, n
         dMdt_spec_sol = dMdt_spec_sol / magnitudes
     
 
-    plt.figure(figsize=(8,8))
+    plt.figure(figsize=(10,10))
 
-    plt.quiver(P,M, dpdt_spec_sol, dMdt_spec_sol, angles='xy', scale_units='xy', scale=1, color='b')
+    plt.streamplot(P,M, dpdt_spec_sol, dMdt_spec_sol)
+
+    # plt.quiver(P,M, dpdt_spec_sol, dMdt_spec_sol, angles='xy', scale_units='xy', scale=1, color='b')
 
     plt.xlim(p_range[0], p_range[1])
     plt.ylim(M_range[0], M_range[1])
@@ -51,11 +53,11 @@ def plot_phase_plane(p_range, M_range, grid_size, traj="", include_traj=False, n
     plt.title("P53 and MDM2 Phase Plane")
 
     if include_traj:
-        start_point = round(traj.y[0][0],2), round(traj.y[1][0],)
+        start_point = round(float(traj.y[0][0]), 1), round(float(traj.y[1][0]),1)
         plt.plot(traj.y[0], traj.y[1], 'r-', label=f"t=0, {start_point}")
         plt.plot(start_point[0], start_point[1], 'ro')
         
-    plt.legend()
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.show()
 
     return P, M, dpdt_spec_sol, dMdt_spec_sol, magnitudes
