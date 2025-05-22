@@ -27,7 +27,7 @@ There are two scripts--`results_1D.py` and `results_2D.py`-- that call upon the 
 
 - `solve_2D.py`
 - `plot_phase_plane.py`
-- `plot_nullclines.py`
+- `fixed_points_2D.py`
 
 No type annotations, bad naming conventions, no docstrings, some hardcoded graph formating - sorry.
 

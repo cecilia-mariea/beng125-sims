@@ -24,13 +24,13 @@ PARAMETERS_2D = {
     "kp_p53" : 6, # autoregulation of p53
     "dp" : 0.1, # natural degredation of p53
     "Kp" : 2, # half saturation constant for TP53
-    "Km" : 1,  # half saturation constant for MDM2 mRNA
-    "lam" : 3, # ubiquitination of p53
+    "Km" : 3,  # half saturation constant for MDM2 mRNA
+    "lam" : 3, # ubiquitination of p53 
     "n" : 4, # cooperativity of TP53 binding
     "m": 2, # cooperativity of MDM2 mRNA binding
-    "km": 0.5, # MDM2 basal synthesis
-    "km_p53" : 1.5, # activation of MDM2
-    "dm" : 0.2 # natural degredation of MDM2
+    "km": 0.5, # MDM2 basal synthesis # ?
+    "km_p53" : 0.5, # activation of MDM2 # TODO if change km_p53, lambda must change as well
+    "dm" : 0.8 # natural degredation of MDM # ?
 }
 
 # 1D eqns
@@ -59,10 +59,10 @@ def dMdt(vars, kp, kp_p53, dp, Kp, Km, lam, n, m, km, km_p53, dm):
 
     return (km + km_p53 * hill(p, m, Km)) - (dm * M)
 
-def p53_MDM2(t, vars, params):
-    return dpdt_2D(vars, **params), dMdt(vars, **params)
+p53_MDM2 = lambda t, vars, params: (dpdt_2D(vars, **params), dMdt(vars, **params))
 
 # nullclines : solve for M when dpdt = 0 etc. and hard code in
+
 def calc_nullcline(p, kp, kp_p53, dp, Kp, Km, lam, n, m, km, km_p53, dm):
 
     p_nullcline_M = np.zeros_like(p)

@@ -10,30 +10,31 @@ def figure6():
     p0 = np.linspace(1,5,5)
     M0 = np.linspace(1,5,5)
 
-    init_cond = pairwise(p0, M0)
+    # init_cond = pairwise(p0, M0)
     t0 = 0
-    tf = 15
+    tf = 10 
 
-    sols = t_sim(t0, tf, init_cond, init_range=True)
+    sols = t_sim(t0, tf, (2,4))
 
-# phase plane and example trajectory
+# phase plane, example trajectory, nullclines
 def figure7():
+
     from plot_phase_plane import plot_phase_plane
     from solve_2D import solve_sys
 
-    p_range = (0, 5)
-    M_range = (0, 5)    
-    grid_size = 10 
-
+    p_range = (0, 4)
+    M_range = (0, 4)    
+    grid_size = 100 
     t0 = 0
     tf = 20 
     t_span = (t0, tf)
-    t_eval = np.linspace(t_span[0], t_span[1], 1000)
+    t_eval = np.linspace(*t_span, 1000)
     init_cond = (4,4)
+
     sol = solve_sys(t_span, t_eval, init_cond)
 
-    plot_phase_plane(p_range, M_range, grid_size, sol, include_traj=True)
-
-# nullclines
+    plot_phase_plane(p_range, M_range, grid_size, include_nullcline=True)
 
 # param sweeping
+def figure8():
+   pass 

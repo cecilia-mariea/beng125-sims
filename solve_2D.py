@@ -13,6 +13,7 @@ def solve_sys(t_span, t_eval, init_cond):
         t_span = t_span,
         y0 = init_cond, # should be array-like
         t_eval = t_eval,
+        dense_output=True,
         rtol = 1e-8, # relative tolerance
         atol = 1e-10 # global tolerance
     )
@@ -48,7 +49,7 @@ def t_sim(t0, tf, init_cond, init_range=False):
 
         plt.figure(figsize=(8,5))
 
-        sol = solve_sys(t_span, t_eval, init_cond, params)
+        sol = solve_sys(t_span, t_eval, init_cond)
         sols.append(sol)
 
         plt.plot(sol.t, sol.y[0], label="p53 concentration")

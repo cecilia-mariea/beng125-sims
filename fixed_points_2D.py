@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 
 # custom imports
-from set_params_eqns import  dMdt, p53_MDM2, calc_nullcline
+from set_params_eqns import  dMdt, p53_MDM2
 from set_params_eqns import dpdt_2D as dpdt, PARAMETERS_2D as params
 
 # find fixed points
@@ -34,6 +34,8 @@ def calc_fixed_pts(p0, m0):
     return set(fixed_pts)
 
 def jacobian(pt, h=1e-6): 
+
+    # by central difference method
 
     p, M = pt
 
@@ -71,22 +73,5 @@ def classify_fixed_pts(pts):
 
     return classified_pts
 
-def plot_nullclines(p):
-
-    P, p_nullcline_M, M_nullcline_M = calc_nullcline(p, **params)
-
-    plt.figure(figsize=(10,10))
-
-    plt.plot(P, p_nullcline_M, label="P53 nullcline", color="r", linewidth=3)
-    plt.plot(P, M_nullcline_M, label="MDM2 nullcline", color="b", linewidth=3)
-
-    plt.xlabel("dpDt")
-    plt.ylabel("dMdt")
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-
-    plt.show()
-
 if __name__=="__main__":
-    print("plot nullclines script called directly")
+    print("fixed points script called directly")
