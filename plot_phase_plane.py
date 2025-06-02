@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 # custom imports
 from set_params_eqns import  dMdt, calc_nullcline
 from set_params_eqns import dpdt_2D as dpdt, PARAMETERS_2D as params
+from fixed_points_2D import calc_fixed_pts, classify_fixed_pt
 
 # calculate 2D vector field
-def plot_phase_plane(p_range, M_range, grid_size, traj="", include_traj=False, normalized=True, include_nullcline=False):
+def plot_phase_plane(p_range, M_range, grid_size, normalized=True, include_nullcline=False):
     """
     `traj` should be a solve_ivp object if `include_traj` is True, can use solve_2D `solve_sys`
     """
@@ -30,27 +31,24 @@ def plot_phase_plane(p_range, M_range, grid_size, traj="", include_traj=False, n
             dpdt_spec_sol[i,j] = dpdt(vars, **params)
             dMdt_spec_sol[i,j] = dMdt(vars, **params)
     
-    # find the cartesian magnitude
-    magnitudes = np.sqrt(dpdt_spec_sol**2 + dMdt_spec_sol**2)
-
     if normalized:
+        # find the cartesian magnitude
+        magnitudes = np.sqrt(dpdt_spec_sol**2 + dMdt_spec_sol**2)
+
         dpdt_spec_sol = dpdt_spec_sol / magnitudes
         dMdt_spec_sol = dMdt_spec_sol / magnitudes
 
-    plt.figure(figsize=(10,10))
+    plt.figure(figsize=(6,6))
 
-    plt.streamplot(P,M, dpdt_spec_sol, dMdt_spec_sol, color="orange", density=1)
+    plt.streamplot(P,M, dpdt_spec_sol, dMdt_spec_sol, color="orange", density=0.8)
 
+    plt.xlim(p_range[0], p_range[1])
+    plt.ylim(M_range[0], M_range[1])
     plt.xlabel("p (uM)")
     plt.ylabel("M (uM)")
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
     plt.title("P53 and MDM2 Phase Plane")
-
-    if include_traj:
-        start_point = round(float(traj.y[0][0]), 1), round(float(traj.y[1][0]),1)
-        plt.plot(traj.y[0], traj.y[1], 'k-', label=f"t=0, {start_point}")
-        plt.plot(start_point[0], start_point[1], 'ro')
 
     if include_nullcline:
         
@@ -59,10 +57,20 @@ def plot_phase_plane(p_range, M_range, grid_size, traj="", include_traj=False, n
         plt.plot(P, p_nullcline_M, label="P53 nullcline", color="r", linewidth=2)
         plt.plot(P, M_nullcline_M, label="MDM2 nullcline", color="b", linewidth=2)
 
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+        fixed_pt = calc_fixed_pts()
+        print(fixed_pt)
+
+        classification = [classify_fixed_pt(pt) for pt in fixed_pt]
+        print(classification)
+
+        for pt in fixed_pt:
+            x,y = pt
+            plt.scatter(x,y,marker="o", color="black",s=40,label="fixed point")
+
+    plt.legend(loc='upper left')
     plt.show()
 
-    return P, M, dpdt_spec_sol, dMdt_spec_sol, magnitudes
+    return P, M, dpdt_spec_sol, dMdt_spec_sol
 
 if __name__ == '__main__':
     print("2D phase plane script was explicitly called")

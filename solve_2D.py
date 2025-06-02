@@ -4,12 +4,12 @@ from math import ceil
 from scipy.integrate import solve_ivp
 from itertools import product
 
-from set_params_eqns import p53_MDM2
+from set_params_eqns import p53_MDM2_dt
 from set_params_eqns import PARAMETERS_2D as params
 
 def solve_sys(t_span, t_eval, init_cond):
     return solve_ivp(
-        fun = lambda t, vars: p53_MDM2(t, vars, params), 
+        fun = lambda t, vars: p53_MDM2_dt(t, vars, params), 
         t_span = t_span,
         y0 = init_cond, # should be array-like
         t_eval = t_eval,
@@ -58,6 +58,7 @@ def t_sim(t0, tf, init_cond, init_range=False):
         plt.grid(True, alpha=0.3)
         plt.ylabel("Species Concentration (uM)")
         plt.xlabel("Time (min)")
+        plt.title(f"Time series of Species Concentration with Initial Conditions {init_cond}")
 
 
     plt.legend()

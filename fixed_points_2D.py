@@ -1,77 +1,68 @@
 # imports
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
+from scipy.differentiate import jacobian
 
 # custom imports
 from set_params_eqns import  dMdt, p53_MDM2
 from set_params_eqns import dpdt_2D as dpdt, PARAMETERS_2D as params
 
+GUESSES = np.array([[x, y] for x in [0, 5, 10, 50] for y in [0, 5, 10, 50]])
+
 # find fixed points
-def calc_fixed_pts(p0, m0):
+def calc_fixed_pts(guesses=GUESSES):
 
     fixed_pts = []
 
-    for p in p0: 
-        for m in m0:
+    for guess in guesses:
+        sol = fsolve(p53_MDM2, guess, args=(params))
 
-            initial_guess = np.array([p,m])
-            sol = fsolve(p53_MDM2, initial_guess, args=(params))
+        p_star = sol[0]
+        M_star = sol[1]
+        vec = (p_star, M_star)
 
-            p_star = sol[0]
-            M_star = sol[1]
+        # check if solver was successful
+        if np.allclose(
+            [dpdt(vec, **params),
+                dMdt(vec, **params)],
+            [0,0]):
 
-            # check if solver was successful
-            if np.allclose(
-                [dpdt(p_star, M_star, params),
-                 dMdt(p_star, M_star, params)],
-                [0,0]):
+            if not any(np.allclose(pt, vec, rtol=1e-5, atol=1e-8) for pt in fixed_pts):
 
-                # round solutions to avoid non-unique solutions from overflow
-                sol_rounded = round(p_star,4), round(M_star,4)
-                fixed_pts.append(sol_rounded)
+                fixed_pts.append(vec)
 
-    return set(fixed_pts)
+    return fixed_pts
 
-def jacobian(pt, h=1e-6): 
+def classify_fixed_pt(pt):
 
-    # by central difference method
-
-    p, M = pt
-
-    partial_M_partial_M = (dMdt((p, M+h), **params) - dMdt(p, M-h **params)) / 2*h
-    partial_M_partial_p = (dMdt((p+h, M), **params) - dMdt((p-h, M), **params)) / 2*h
-    partial_p_partial_M = (dpdt((p,M+h),**params) - dpdt((p,M-h), **params)) / 2*h
-    partial_p_partial_p =  (dpdt((p+h, M), **params) - dpdt((p-h, M), **params)) / 2*h
-
-    return np.array([[partial_p_partial_p, partial_p_partial_M],
-            [partial_M_partial_p, partial_M_partial_M]])
-
-def classify_fixed_pts(pts):
-
-    classified_pts = np.zeros_like(pts)
-
-    def classify(eigenvals):
-
-        if np.all(np.real(eigenvals)) > 0:
-            return 'unstable'
-        elif np.all(np.real(eigenvals)) < 0:
-            return 'stable'
-        elif (np.any(np.real(eigenvals)) < 0 ) and (np.any(np.real(eigenvals > 0))):
-            return 'saddle node'
-        elif (np.any(np.img(eigenvals)) != 0):
-            return 'oscillatory'
+    def classify(eig):
+        if np.all(np.iscomplex(eig)):
+            if np.all(eig.real < 0):
+                return "stable spiral"
+            elif np.all(eig.real > 0):
+                return "unstable spiral"
+            elif np.allclose(eig.real, 0):
+                return "center"
         else:
-            return 'linear analysis fails'
+            if np.any(eig.real < 0) and np.any(eig.real > 0):
+                return "saddle"
+            elif np.all(eig.real < 0):
+                return "stable node"
+            elif np.all(eig.real > 0):
+                return "unstable node"
+        return "other"
 
-    for i, pt in enumerate(pts):
+    eqn = lambda vars: (dpdt(vars, **params), dMdt(vars, **params))
 
-        J = jacobian(pt)
-        eigenvals = np.linalg.eigvals(J)
+    J = jacobian(
+        eqn,
+        pt,
+        tolerances = {"rtol": 1e-8, "atol": 1e-10}
+    )
 
-        classified_pts[i] = pt, classify(eigenvals)
+    eigenvals = np.linalg.eigvals(J.df)
 
-    return classified_pts
+    return classify(eigenvals)
 
 if __name__=="__main__":
     print("fixed points script called directly")

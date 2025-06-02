@@ -20,17 +20,17 @@ PARAMETERS_1D = {
 
 # params used in 2D report 
 PARAMETERS_2D = {
-    "kp" : 0.8, # p53 basal synthesis
-    "kp_p53" : 6, # autoregulation of p53
-    "dp" : 0.1, # natural degredation of p53
-    "Kp" : 2, # half saturation constant for TP53
-    "Km" : 3,  # half saturation constant for MDM2 mRNA
-    "lam" : 3, # ubiquitination of p53 
-    "n" : 4, # cooperativity of TP53 binding
-    "m": 2, # cooperativity of MDM2 mRNA binding
-    "km": 0.5, # MDM2 basal synthesis # ?
-    "km_p53" : 0.5, # activation of MDM2 # TODO if change km_p53, lambda must change as well
-    "dm" : 0.8 # natural degredation of MDM # ?
+    "kp": 0.1,         # weak basal p53 synthesis
+    "kp_p53": 6,     # strong positive feedback on p53
+    "dp": 0.1,          # moderate p53 degradation
+    "Kp": 2.0,          # p53 half-saturation for self-activation
+    "Km": 1,          # Km for MDM2 induction, use Km=6 for unstable spiral
+    "lam": 3.0,         # strong MDM2-mediated p53 degradation
+    "n": 4,             # sharp p53 feedback (high cooperativity)
+    "m": 3,             # sharp MDM2 activation
+    "km": 0.01,         # weak basal MDM2 synthesis
+    "km_p53": 3.0,      # strong MDM2 induction by p53
+    "dm": 0.3           # relatively slow MDM2 degradation
 }
 
 # 1D eqns
@@ -59,7 +59,9 @@ def dMdt(vars, kp, kp_p53, dp, Kp, Km, lam, n, m, km, km_p53, dm):
 
     return (km + km_p53 * hill(p, m, Km)) - (dm * M)
 
-p53_MDM2 = lambda t, vars, params: (dpdt_2D(vars, **params), dMdt(vars, **params))
+p53_MDM2_dt = lambda t, vars, params: (dpdt_2D(vars, **params), dMdt(vars, **params))
+
+p53_MDM2 = lambda vars, params: (dpdt_2D(vars,**params), dMdt(vars, **params))
 
 # nullclines : solve for M when dpdt = 0 etc. and hard code in
 
